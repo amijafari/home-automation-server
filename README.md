@@ -48,7 +48,7 @@ We should permit Apache to run `sudo` command without password. Execute `sudo vi
 www-data ALL=(ALL) NOPASSWD:ALL
 ```
 
-Finally copy the contents of `web` directory of this repository to the `/var/www/html/ac/` direcotyr.
+Finally put the contents of the `web` directory of this repository to the `/var/www/html/ac/` directory.
 
 ### IR Transmitter Circuit
 [View IR transmitter circuit desing live preview](https://circuits.io/circuits/3359340-ir-sender)
