@@ -1,5 +1,5 @@
 # Home Automation Server (IR Transmitter)
-A simple home automation project to transmit IR remote controler signals using Raspberry PI. This project configured to transmit my air conditioner signals so I can control air conditioner (or any appliance have a IR remote control) through a nice web interface from anywhere. I used [Lirc](http://www.lirc.org) module to transmit signals, Apache and PHP for web interface.
+A simple home automation project to transmit IR remote controler signals using [Raspberry PI](https://www.raspberrypi.org/). This project configured to transmit my air conditioner signals so I can control air conditioner (or any appliance have a IR remote control) through a nice web interface from anywhere. I used [Lirc](http://www.lirc.org) module to transmit signals, Apache and PHP for web interface.
 
 ## Setup
 
