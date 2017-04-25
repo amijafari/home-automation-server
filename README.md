@@ -21,7 +21,7 @@ $ sudo vi /etc/lirc/hardware.conf
 $ sudo reboot
 
 $ sudo vi /boot/config.txt
-  dtoverlay=lirc-rpi,gpio_in_pin=18,gpio_out_pin=17,gpio_in_pull=up
+  dtoverlay=lirc-rpi,gpio_in_pin=2,gpio_out_pin=22,gpio_in_pull=up
 
 $ vi /etc/lirc/lircd.conf
   Add line:
