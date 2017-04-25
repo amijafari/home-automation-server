@@ -37,4 +37,5 @@ $ sudo visudo
 ```
 
 ### IR Transmitter Circuit
+[View IR transmitter circuit desing live preview](https://circuits.io/circuits/3359340-ir-sender)
 ![IR Transmitter circuit](https://github.com/amijafari/home-automation-server/blob/master/circuits/ir-sender.png?raw=true)
