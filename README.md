@@ -43,10 +43,12 @@ $ sudo apt-get install apache2 php5 libapache2-mod-php5
 $ sudo service apache2 restart
 ```
 
-We should permit Apache to run `sudo` command without password. Use `sudo visudo` and add following line:
+We should permit Apache to run `sudo` command without password. Execute `sudo visudo` command and add following line:
 ```
 www-data ALL=(ALL) NOPASSWD:ALL
 ```
+
+Finally copy the contents of `web` directory of this repository to the `/var/www/html/ac/` direcotyr.
 
 ### IR Transmitter Circuit
 [View IR transmitter circuit desing live preview](https://circuits.io/circuits/3359340-ir-sender)
