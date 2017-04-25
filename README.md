@@ -1,4 +1,4 @@
-# Home Automation (Air Conditioner Control)
+# Home Automation Server (IR Transmitter)
 A simple home automation project to transmit IR remote controler signals using Raspberry PI. This project configured to transmit my air conditioner signals.
 I used [Lirc](http://www.lirc.org) module to transmit signals, Apache and PHP for web interface.
 
@@ -36,3 +36,6 @@ $ sudo service apache2 restart
 $ sudo visudo
   www-data ALL=(ALL) NOPASSWD:ALL
 ```
+
+### IR Transmitter Circuit
+![IR Transmitter circuit](https://github.com/amijafari/home-automation-server/blob/master/circuits/ir-sender.png?raw=true)
