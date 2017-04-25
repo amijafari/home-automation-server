@@ -7,33 +7,45 @@ A simple home automation project to transmit IR remote controler signals using [
 Install and configure Lirc.
 ```
 $ sudo apt-get install lirc
-
-$ sudo vi /etc/modules
-  Add following lines:
-  lirc_dev
-  lirc_rpi gpio_in_pin=2 gpio_out_pin=22
-
-$ sudo vi /etc/lirc/hardware.conf
-  DRIVER="default"
-  DEVICE="/dev/lirc0"
-  MODULES="lirc_rpi"
-
-$ sudo reboot
-
-$ sudo vi /boot/config.txt
-  dtoverlay=lirc-rpi,gpio_in_pin=2,gpio_out_pin=22,gpio_in_pull=up
-
-$ vi /etc/lirc/lircd.conf
-  Add line:
-  include "/var/www/html/ac/action/atp_ac.conf"
 ```
 
-Install Apache and PHP so we could have a web interface. We should permit Apache to run `sudo` command without password.
+Add following lines to `/etc/modules`
+```
+lirc_dev
+lirc_rpi gpio_in_pin=2 gpio_out_pin=22
+```
+
+Edit `/etc/lirc/hardware.conf` like below:
+```
+DRIVER="default"
+DEVICE="/dev/lirc0"
+MODULES="lirc_rpi"
+```
+
+Reboot to load module.
+```
+$ sudo reboot
+```
+
+Add following line to `/boot/config.txt`
+```
+dtoverlay=lirc-rpi,gpio_in_pin=2,gpio_out_pin=22,gpio_in_pull=up
+```
+
+Add following to `/etc/lirc/lircd.conf` file in order to load the our custom remote configuration:
+```
+include "/var/www/html/ac/action/atp_ac.conf"
+```
+
+Install Apache and PHP so we could have a web interface.
 ```
 $ sudo apt-get install apache2 php5 libapache2-mod-php5
 $ sudo service apache2 restart
-$ sudo visudo
-  www-data ALL=(ALL) NOPASSWD:ALL
+```
+
+We should permit Apache to run `sudo` command without password. Use `sudo visudo` and add following line:
+```
+www-data ALL=(ALL) NOPASSWD:ALL
 ```
 
 ### IR Transmitter Circuit
