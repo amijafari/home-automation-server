@@ -9,7 +9,7 @@ Install and configure Lirc.
 $ sudo apt-get install lirc
 ```
 
-Add following lines to `/etc/modules`
+Add following lines to `/etc/modules` file:
 ```
 lirc_dev
 lirc_rpi gpio_in_pin=2 gpio_out_pin=22
@@ -27,17 +27,17 @@ Reboot to load module.
 $ sudo reboot
 ```
 
-Add following line to `/boot/config.txt`
+Add following line to `/boot/config.txt` file:
 ```
 dtoverlay=lirc-rpi,gpio_in_pin=2,gpio_out_pin=22,gpio_in_pull=up
 ```
 
-Add following to `/etc/lirc/lircd.conf` file in order to load the our custom remote configuration:
+Add following line to `/etc/lirc/lircd.conf` file in order to load the our custom remote configuration:
 ```
 include "/var/www/html/ac/action/atp_ac.conf"
 ```
 
-Install Apache and PHP so we could have a web interface.
+Install Apache and PHP so we could have a web interface:
 ```
 $ sudo apt-get install apache2 php5 libapache2-mod-php5
 $ sudo service apache2 restart
