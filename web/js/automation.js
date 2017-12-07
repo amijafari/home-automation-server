@@ -57,11 +57,12 @@ function updateUI() {
   var now = (new Date()).getTime();
   var modifiedDate = parseInt(STATE['modifiedDate']);
   var timerOn = parseFloat(STATE.timerOn) || 0;
-  if (timerOn > 0 && (modifiedDate + timerOn*3600000) > now) {
+  if (timerOn > 0 && now < (modifiedDate + timerOn*3600000)) {
     $('#fan-icon').attr('class', 'OFF');
   }
   else {
     $('#fan-icon').attr('class', STATE.powerStatus);
+    $('#timer-on').val('');
   }
 }
 
