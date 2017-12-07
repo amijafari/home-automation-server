@@ -1,7 +1,7 @@
 
 var STATE_TIMEOUT = null;
 
-var state = {
+var STATE = {
   'powerStatus': '',
   'mode': '',
   'fanSpeed': '',
@@ -16,18 +16,12 @@ function setStateTimeout() {
 }
 
 function setState() {
-  state['powerStatus'] = $('#power-icon').attr('data-powered');
-  state['mode'] = $('#mode svg.active').attr('id');
-  state['fanSpeed'] = $('#fan-icon').attr('data-speed');
-  state['temperature'] = $('#temp-control .temperature').text().trim();
-  state['timerOn'] = $('#timer-on').val();
-
-  //console.log(state);
-
+  //console.log(STATE);
+  
   $.ajax({
     url: 'action/action.php?r=' + (Math.floor(Math.random() * 10000)),
     data: {
-      state: JSON.stringify(state)
+      state: JSON.stringify(STATE)
     },
     type: 'POST',
     dataType: 'JSON',
@@ -44,19 +38,30 @@ function setState() {
   });
 }
 
-function updateUI(state) {
-  $('#power-icon').attr('data-powered', state.powerStatus);
-  $('#fan-icon').attr('data-speed', state.fanSpeed).attr('class', state.powerStatus);
-  $('#temp-control .temperature').text(state.temperature);
-  $('#timer-on').val(state.timerOn);
+function updateUI() {
+  $('#power-icon').attr('data-powered', STATE.powerStatus).attr('title', STATE.powerStatus);
+  $('#fan-icon').attr('data-speed', STATE.fanSpeed).attr('title', STATE.fanSpeed);
+  $('#temp-control .temperature').text(STATE.temperature);
+  $('#timer-on').val(STATE.timerOn);
 
-  $('#mode svg#' + state.mode).siblings().removeClass('active');
-  $('#mode svg#' + state.mode).addClass('active');
+  $('#mode svg#' + STATE.mode).siblings().removeClass('active');
+  $('#mode svg#' + STATE.mode).addClass('active');
 
-  if (state.mode == 'COOL') {
+  if (STATE.mode != 'FAN') {
     $('#temp-control').attr('class', 'active');
   } else {
     $('#temp-control').attr('class', 'inactive');
+  }
+
+  // check timer is reached
+  var now = (new Date()).getTime();
+  var modifiedDate = parseInt(STATE['modifiedDate']);
+  var timerOn = parseFloat(STATE.timerOn) || 0;
+  if (timerOn > 0 && (modifiedDate + timerOn*3600000) > now) {
+    $('#fan-icon').attr('class', 'OFF');
+  }
+  else {
+    $('#fan-icon').attr('class', STATE.powerStatus);
   }
 }
 
@@ -65,7 +70,8 @@ function init() {
     url: 'action/action.php?r=' + (Math.floor(Math.random() * 10000)),
     dataType: 'JSON',
     success: function(data) {
-      updateUI(data);
+      STATE = data;
+      updateUI();
 
       $('#app').animate({
         opacity: 1
@@ -98,7 +104,6 @@ function getNextPowerState(cur) {
 }
 
 function getNextTemp(btn) {
-  var ele = $('#temp-control .temperature');
   var cur = parseInt(ele.text().trim());
 
   if (btn == 'arrowUp' && cur < 30) {
@@ -107,7 +112,7 @@ function getNextTemp(btn) {
     cur--;
   }
 
-  ele.text(cur);
+  return cur;
 }
 
 function getNextBulbState(cur) {
@@ -120,25 +125,28 @@ function getNextBulbState(cur) {
 }
 
 $('#bulb').click(function() {
-  $(this).attr('data-state', getNextBulbState($(this).attr('data-state')));
+  //STATE['bulb'] = getNextBulbState($(this).attr('data-state'));
+  //updateUI(STATE);
   //setStateTimeout();
 });
 
 $('#fan-icon').click(function() {
-  if ($(this).hasClass('ON')) {
-    $(this).attr('data-speed', getNexFanSpeed($(this).attr('data-speed')));
-    setStateTimeout();
-  }
+  STATE['fanSpeed'] = getNexFanSpeed($(this).attr('data-speed'));
+
+  updateUI();
+  setStateTimeout();
 });
 
 $('#power-icon').click(function() {
-  var ps = getNextPowerState($(this).attr('data-powered'));
-  $(this).attr('data-powered', ps);
-  $(this).next().attr('class', ps);
+  STATE['powerStatus'] = getNextPowerState($(this).attr('data-powered'));
+
+  updateUI();
   setStateTimeout();
 });
 
 $('#mode svg').click(function() {
+  STATE['mode'] = $(this).attr('id');
+
   $(this).siblings().removeClass('active');
   $(this).addClass('active');
 
@@ -148,17 +156,29 @@ $('#mode svg').click(function() {
     $('#temp-control').attr('class', 'inactive');
   }
 
+  updateUI();
   setStateTimeout();
 });
 
 $('#up-down img').click(function() {
   if ($(this).closest('#temp-control').hasClass('active')) {
-    getNextTemp($(this).attr('class'));
+    STATE['temperature'] = getNextTemp($(this).attr('class'));
+
+    updateUI();
     setStateTimeout();
   }
 });
 
 $('#timer-on').change(function() {
+  STATE['timerOn'] = this.value;
+
+  if (this.value != '' && this.value > 0) {
+    STATE['powerStatus'] = 'ON';
+  } else {
+    STATE['powerStatus'] = 'OFF';
+  }
+  
+  updateUI();
   setStateTimeout();
 });
 

@@ -33,22 +33,24 @@ require 'auth.php';
       </div>
 
       <div id="mode">
-        <svg width="88" height="75" id="FAN" class="active">
-          <circle cx="50%" cy="50%" r="35" fill="white" stroke="#FF7D83" stroke-width="4" />
-          <circle cx="50%" cy="50%" r="22" fill="#FF7D83" class="inner" />
-        </svg>
-        <!--svg width="88" height="75" id="HEAT" class="active">
-          <circle cx="50%" cy="50%" r="35" fill="white" stroke="#FF7D83" stroke-width="4" />
-          <circle cx="50%" cy="50%" r="22" fill="#FF7D83" class="inner" />
-        </svg-->
-        <svg width="88" height="75" id="COOL">
-          <circle cx="50%" cy="50%" r="35" fill="white" stroke="#78D3FF" stroke-width="4" />
-          <circle cx="50%" cy="50%" r="22" fill="#78D3FF" class="inner" />
-        </svg>
-        <!--svg width="88" height="75">
-          <circle cx="50%" cy="50%" r="35" fill="white" stroke="#F1F1BD" stroke-width="4" />
-          <circle cx="50%" cy="50%" r="22" fill="#F1F1BD" class="inner" />
-        </svg-->
+        <a title="FAN">
+          <svg width="88" height="75" id="FAN">
+            <circle cx="50%" cy="50%" r="35" fill="white" stroke="#E2E2A2" stroke-width="4" />
+            <circle cx="50%" cy="50%" r="22" fill="#E2E2A2" class="inner" />
+          </svg>
+        </a>
+        <a title="HEAT">
+          <svg width="88" height="75" id="HEAT">
+            <circle cx="50%" cy="50%" r="35" fill="white" stroke="#FF7D83" stroke-width="4" />
+            <circle cx="50%" cy="50%" r="22" fill="#FF7D83" class="inner" />
+          </svg>
+        </a>
+        <a title="COOL">
+          <svg width="88" height="75" id="COOL">
+            <circle cx="50%" cy="50%" r="35" fill="white" stroke="#78D3FF" stroke-width="4" />
+            <circle cx="50%" cy="50%" r="22" fill="#78D3FF" class="inner" />
+          </svg>
+        </a>
       </div>
 
       <div id="fan-speed">
@@ -57,8 +59,8 @@ require 'auth.php';
           <img id="unlock" src="images/lock-open.svg" width="30" height="30" />
         </div>
 
-        <img id="power-icon" data-powered="ON" src="images/power.svg" width="75" height="75" />
-        <img id="fan-icon" src="images/fan.svg" width="75" height="75" data-speed="LOW" class="ON" />
+        <img id="power-icon" data-powered="ON" src="images/power.svg" width="75" height="75" title="OFF" />
+        <img id="fan-icon" src="images/fan.svg" width="75" height="75" data-speed="LOW" class="ON" title="LOW" />
         <img id="lock" src="images/lock.svg" width="30" height="30" />
       </div>
 

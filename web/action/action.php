@@ -135,12 +135,14 @@ if (isset($_POST['state'])) {
 		);
 
 		if (addCMDtoCONF($cmd, $cmdName)) {
-			if (transmit($cmd, $cmdName)) {
-				file_put_contents(STATE_CACHE_PATH, $_POST['state']);
+			$out = transmit($cmd, $cmdName);
+			if (count($out) == 0) {
+				$curState->modifiedDate = time()*1000;
+				file_put_contents(STATE_CACHE_PATH, json_encode($curState));
 			}
 			else {
 				$res['status'] = 'error';
-				$res['msg'] = 'transmittion error';
+				$res['msg'] = $out[1];
 			}
 		}
 		else {
@@ -172,7 +174,7 @@ function transmit($cmd, $cmdName) {
 	//$hexCMD = strtoupper(getHex($cmd));
 	exec(LIRC_SEND_CMD . ' ' . $cmdName . ' 2>&1', $out, $ret);
 	//print_r($out);
-	return ($ret == 0);
+	return $out;
 }
 
 function addCMDtoCONF($cmd, $cmdName) {
@@ -182,11 +184,15 @@ function addCMDtoCONF($cmd, $cmdName) {
 
 	if (!strpos($conf, $cmdName)) {
 		$conf = str_replace('end codes', "\t" . $cmdName . "\t\t0x" . $hexCMD . "\n\tend codes", $conf);
-		file_put_contents(LIRC_CONF_FILE_PATH, $conf);
+		
+		if (file_put_contents(LIRC_CONF_FILE_PATH, $conf)) {
+			exec(LIRC_RELOAD_CMD, $out, $ret);
 
-		exec(LIRC_RELOAD_CMD, $out, $ret);
-
-		return ($ret == 0);
+			return ($ret == 0);
+		}
+		else {
+			return false;
+		}
 	}
 
 	//echo '<pre>' . $conf . '</per>';
