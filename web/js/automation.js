@@ -63,6 +63,7 @@ function updateUI() {
   else {
     $('#fan-icon').attr('class', STATE.powerStatus);
     $('#timer-on').val('');
+    STATE.timerOn = '';
   }
 }
 
