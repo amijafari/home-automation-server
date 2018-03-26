@@ -106,6 +106,7 @@ function getNextPowerState(cur) {
 }
 
 function getNextTemp(btn) {
+  var ele = $('#temp-control .temperature');
   var cur = parseInt(ele.text().trim());
 
   if (btn == 'arrowUp' && cur < 30) {
