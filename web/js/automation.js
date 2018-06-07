@@ -44,7 +44,7 @@ function updateUI() {
   $('#temp-control .temperature').text(STATE.temperature);
   $('#timer-on').val(STATE.timerOn);
 
-  $('#mode svg#' + STATE.mode).siblings().removeClass('active');
+  $('#mode svg.active').removeClass('active');
   $('#mode svg#' + STATE.mode).addClass('active');
 
   if (STATE.mode != 'FAN') {
