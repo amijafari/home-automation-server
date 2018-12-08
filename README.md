@@ -15,11 +15,19 @@ lirc_dev
 lirc_rpi gpio_in_pin=2 gpio_out_pin=22
 ```
 
-Edit `/etc/lirc/hardware.conf` like below:
+Edit `/etc/lirc/hardware.conf` like below (no need in raspbian Stretch):
 ```
+LIRCD_ARGS="--uinput --listen"
+LOAD_MODULES=true
 DRIVER="default"
 DEVICE="/dev/lirc0"
 MODULES="lirc_rpi"
+```
+
+Update the following lines in `/etc/lirc/lirc_options.conf`:
+```
+driver = default
+device = /dev/lirc0
 ```
 
 Reboot to load module.
@@ -32,14 +40,9 @@ Add following line to `/boot/config.txt` file:
 dtoverlay=lirc-rpi,gpio_in_pin=2,gpio_out_pin=22,gpio_in_pull=up
 ```
 
-Add following line to `/etc/lirc/lircd.conf` file in order to load the our custom remote configuration:
-```
-include "/var/www/html/ac/action/atp_ac.conf"
-```
-
 Install Apache and PHP so we could have a web interface:
 ```
-$ sudo apt-get install apache2 php5 libapache2-mod-php5
+$ sudo apt-get install apache2 php libapache2-mod-php
 $ sudo service apache2 restart
 ```
 
@@ -48,7 +51,21 @@ We should permit Apache to run `sudo` command without password. Execute `sudo vi
 www-data ALL=(ALL) NOPASSWD:ALL
 ```
 
-Finally put the contents of the `web` directory of this repository to the `/var/www/html/ac/` directory.
+Put the contents of the `web` directory of this repository to the `/home/pi/public_html/ac/` directory.
+Add virtual host to apache with home directory as `/home/pi/public_html/`.
+
+Create link to remote config file:
+```
+sudo ln -s /home/pi/public_html/ac/conf/atp_ac.conf /etc/lirc/lircd.conf.d/atp_ac.conf
+```
+
+Add write permissions to web server user:
+```
+chmod 775 /home/pi/public_html/ac/config/atp_ac.conf
+chgrp www-data /home/pi/public_html/ac/config/atp_ac.conf
+chmod 775 /home/pi/public_html/ac/action/STATE
+chgrp www-data /home/pi/public_html/ac/action/STATE
+```
 
 ### IR Transmitter Circuit
 [View IR transmitter circuit desing live preview](https://circuits.io/circuits/3359340-ir-sender)

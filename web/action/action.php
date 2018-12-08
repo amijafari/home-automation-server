@@ -1,9 +1,9 @@
 <?php
 
-define(STATE_CACHE_PATH,	'STATE');
-define(LIRC_CONF_FILE_PATH,	__DIR__ . '/../conf/atp_ac.conf');
-define(LIRC_RELOAD_CMD,		'sudo service lirc reload');
-define(LIRC_SEND_CMD,		'sudo irsend SEND_ONCE ATP_AC');
+define('STATE_CACHE_PATH',	'STATE');
+define('LIRC_CONF_FILE_PATH',	__DIR__ . '/../conf/atp_ac.conf');
+define('LIRC_RELOAD_CMD',	'sudo service lircd reload');
+define('LIRC_SEND_CMD',		'sudo irsend SEND_ONCE ATP_AC');
 
 global $lirc_conf_file_path;
 
