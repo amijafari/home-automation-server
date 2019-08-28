@@ -26,8 +26,8 @@ MODULES="lirc_rpi"
 
 Update the following lines in `/etc/lirc/lirc_options.conf`:
 ```
-driver = default
-device = /dev/lirc0
+driver=default
+device=/dev/lirc0
 ```
 
 Reboot to load module.
@@ -38,6 +38,12 @@ $ sudo reboot
 Add following line to `/boot/config.txt` file:
 ```
 dtoverlay=lirc-rpi,gpio_in_pin=2,gpio_out_pin=22,gpio_in_pull=up
+```
+
+For newer version of raspbian add the following instead:
+```
+dtoverlay=gpio-ir,gpio_pin=2
+dtoverlay=gpio-ir-tx,gpio_pin=22
 ```
 
 Install Apache and PHP so we could have a web interface:
