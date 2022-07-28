@@ -9,6 +9,7 @@ require 'auth.php';
   <meta charset="UTF-8">
   <title>Air Conditioner Control Panel</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="images/favicon.png" rel="Shortcut Icon" />
   <link href="https://fonts.googleapis.com/css?family=Roboto:100" rel="stylesheet" type="text/css" />
   <link href="css/style.css" rel="stylesheet" type="text/css" />
 </head>
