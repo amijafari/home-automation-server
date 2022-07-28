@@ -2,12 +2,14 @@
 
 define('STATE_CACHE_PATH',	'STATE');
 define('LIRC_CONF_FILE_PATH',	__DIR__ . '/../conf/atp_ac.conf');
-define('LIRC_RELOAD_CMD',	'sudo service lircd reload');
+define('LIRC_RELOAD_CMD',	'sudo systemctl reload lirc');
 define('LIRC_SEND_CMD',		'sudo irsend SEND_ONCE ATP_AC');
 
 global $lirc_conf_file_path;
 
-if (isset($_POST['state'])) {
+$DEV_MODE = true;
+
+if (!isset($_POST['state'])) {
 
 	$curState = json_decode($_POST['state']);
 
@@ -36,6 +38,38 @@ if (isset($_POST['state'])) {
 		$cmdName = 'POWER_OFF';
 	}
 	else {
+		$tempCmd = '';
+		switch ($temperature) {
+			case '17':
+				$tempCmd = '0000'; break;
+			case '18':
+				$tempCmd = '0001'; break;
+			case '19':
+				$tempCmd = '0011'; break;
+			case '20':
+				$tempCmd = '0010'; break;
+			case '21':
+				$tempCmd = '0110'; break;
+			case '22':
+				$tempCmd = '0111'; break;
+			case '23':
+				$tempCmd = '0101'; break;
+			case '24':
+				$tempCmd = '0100'; break;
+			case '25':
+				$tempCmd = '1100'; break;
+			case '26':
+				$tempCmd = '1101'; break;
+			case '27':
+				$tempCmd = '1001'; break;
+			case '28':
+				$tempCmd = '1000'; break;
+			case '29':
+				$tempCmd = '1010'; break;
+			case '30':
+				$tempCmd = '1011'; break;
+		}
+
 		switch ($fanSpeed) {
 			case 'LOW':
 				$cmd .= '10011111';
@@ -53,64 +87,61 @@ if (isset($_POST['state'])) {
 		switch ($mode) {
 			case 'HEAT':
 			case 'FAN':
-				$cmd .= '111001';
+				$cmd .= '1110';
 				
 				if (empty($timerOn)) {
-					$cmd .= '0000011011';
+					$cmd .= '010000011011';
 				}
 				else {
-					$cmd .= '111';
-
-					$half = ($timerOn-floor($timerOn));
-
-					// convert timer hour to binary and add 0 padding to get 5 digits
-					if ($half > 0) {
-						$cmd .= str_pad(base_convert(floor($timerOn), 10, 2), 5, '0', STR_PAD_LEFT);
-						$cmd .= '01'; // if timer has a half
-					}
-					else {
-						$cmd .= str_pad(base_convert(floor($timerOn)-1, 10, 2), 5, '0', STR_PAD_LEFT);
-						$cmd .= '11';
-					}
+					$cmd .= '01111';
 				}
 
 				break;
 
-			// I couldn't found any logical pattern for temperature :|  
 			case 'COOL':
-				switch ($temperature) {
-					case '17':
-						$cmd .= '0000000011111'; break;
-					case '18':
-						$cmd .= '0001000011101'; break;
-					case '19':
-						$cmd .= '0011000011001'; break;
-					case '20':
-						$cmd .= '0010000011011'; break;
-					case '21':
-						$cmd .= '0110000010011'; break;
-					case '22':
-						$cmd .= '0111000010001'; break;
-					case '23':
-						$cmd .= '0101000010101'; break;
-					case '24':
-						$cmd .= '0100000010111'; break;
-					case '25':
-						$cmd .= '1100000000111'; break;
-				 	case '26':
-						$cmd .= '1101000000101'; break;
-					case '27':
-						$cmd .= '1001000001101'; break;
-					case '28':
-						$cmd .= '1000000001111'; break;
-					case '29':
-						$cmd .= '1010000001011'; break;
-					case '30':
-						$cmd .= '1011000001001'; break;
+				$cmd .= $tempCmd;
+
+				if (empty($timerOn)) {
+					$cmd .= '0000';
+					$cmd .= onesComplement($tempCmd);
+					$cmd .= '1111';
+				}
+				else {
+					$cmd .= '0011';
+					$cmd .= ($temperature > 24) ? '1' : '0';
 				}
 
-				$cmd .= '111';
 				break;
+			
+			case 'HEAT':
+				$cmd .= $tempCmd;
+
+				if (empty($timerOn)) {
+					$cmd .= '1100';
+					$cmd .= onesComplement($tempCmd);
+					$cmd .= '0011';
+				}
+				else {
+					$cmd .= '1111';
+					$cmd .= ($temperature > 24) ? '1' : '0';
+				}
+
+				break;
+		}
+
+		// add timer
+		if (!empty($timerOn)) {
+			$half = ($timerOn-floor($timerOn));
+
+			// convert timer hour to binary and add 0 padding to get 5 digits
+			if ($half > 0) {
+				$cmd .= str_pad(base_convert(floor($timerOn), 10, 2), 5, '0', STR_PAD_LEFT);
+				$cmd .= '01'; // if timer has a half
+			}
+			else {
+				$cmd .= str_pad(base_convert(floor($timerOn)-1, 10, 2), 5, '0', STR_PAD_LEFT);
+				$cmd .= '11';
+			}
 		}
 	}
 
@@ -135,7 +166,12 @@ if (isset($_POST['state'])) {
 		);
 
 		if (addCMDtoCONF($cmd, $cmdName)) {
-			$out = transmit($cmd, $cmdName);
+			if ($DEV_MODE) {
+				$out = array();
+			} else {
+				$out = transmit($cmd, $cmdName);
+			}
+
 			if (count($out) == 0) {
 				$curState->modifiedDate = time()*1000;
 				file_put_contents(STATE_CACHE_PATH, json_encode($curState));
@@ -184,8 +220,8 @@ function addCMDtoCONF($cmd, $cmdName) {
 
 	if (!strpos($conf, $cmdName)) {
 		$conf = str_replace('end codes', "\t" . $cmdName . "\t\t0x" . $hexCMD . "\n\tend codes", $conf);
-		
-		if (file_put_contents(LIRC_CONF_FILE_PATH, $conf)) {
+		$w = file_put_contents(LIRC_CONF_FILE_PATH, $conf);
+		if ($w > 0) {
 			exec(LIRC_RELOAD_CMD, $out, $ret);
 
 			return ($ret == 0);
