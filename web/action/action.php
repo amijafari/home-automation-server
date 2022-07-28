@@ -7,7 +7,7 @@ define('LIRC_SEND_CMD',		'sudo irsend SEND_ONCE ATP_AC');
 
 global $lirc_conf_file_path;
 
-$DEV_MODE = true;
+$DEV_MODE = false;
 
 if (!isset($_POST['state'])) {
 
