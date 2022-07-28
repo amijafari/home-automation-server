@@ -68,6 +68,7 @@ require 'auth.php';
       <div id="timer">
         <label>Timer On:</label>
         <input type="number" id="timer-on" min="0" max="24" /> h
+        <span class="timer-on-desc"></span>
       </div>
 
     </div>

@@ -17,7 +17,11 @@ function setStateTimeout() {
 
 function setState() {
   //console.log(STATE);
-  
+
+  if ($('#timer-on').val() == '') {
+    STATE.timerOn = '';
+  }
+
   $.ajax({
     url: 'action/action.php?r=' + (Math.floor(Math.random() * 10000)),
     data: {
@@ -54,16 +58,29 @@ function updateUI() {
   }
 
   // check timer is reached
-  var now = (new Date()).getTime();
+  var now = new Date();
   var modifiedDate = parseInt(STATE['modifiedDate']);
   var timerOn = parseFloat(STATE.timerOn) || 0;
-  if (timerOn > 0 && now < (modifiedDate + timerOn*3600000)) {
+  var timerOnDate = new Date(modifiedDate + timerOn*3600000);
+  
+  if (STATE.powerStatus == 'ON' && timerOn > 0 && now.getTime() < timerOnDate.getTime()) {
     $('#fan-icon').attr('class', 'OFF');
+
+    var timerOnDesc = '(';
+    if (timerOnDate.toDateString() != now.toDateString()) {
+       timerOnDesc += 'Tomorrow';
+    } else {
+       timerOnDesc += 'Today';
+    }
+    timerOnDesc += ' at ' + timerOnDate.getHours() + ':' + timerOnDate.getMinutes();
+    timerOnDesc += ')';
+
+    $('#timer .timer-on-desc').text(timerOnDesc);
   }
   else {
     $('#fan-icon').attr('class', STATE.powerStatus);
     $('#timer-on').val('');
-    STATE.timerOn = '';
+    $('#timer .timer-on-desc').text('');
   }
 }
 
