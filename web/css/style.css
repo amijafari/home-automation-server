@@ -192,6 +192,15 @@ p.temperature {
 	margin-top: 7px;
 }
 
+#transmit {
+        font-size: 80%;
+        margin-top: 20px;
+}
+
+#transmit input {
+        margin: 0 3px;
+}
+
 /* --- animation --- */
 @keyframes spin-low {
 	0% {

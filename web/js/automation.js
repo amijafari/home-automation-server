@@ -18,12 +18,14 @@ function setStateTimeout() {
 function setState() {
   //console.log(STATE);
 
+  var trans = $('#no-transmit').is(':checked') ? 0 : 1;
+
   if ($('#timer-on').val() == '') {
     STATE.timerOn = '';
   }
 
   $.ajax({
-    url: 'action/action.php?r=' + (Math.floor(Math.random() * 10000)),
+    url: 'action/action.php?transmit=' + trans + '&r=' + (Math.floor(Math.random() * 10000)),
     data: {
       state: JSON.stringify(STATE)
     },

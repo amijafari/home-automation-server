@@ -71,6 +71,10 @@ require 'auth.php';
         <span class="timer-on-desc"></span>
       </div>
 
+      <div id="transmit">
+         <label><input type="checkbox" id="no-transmit" value="1" /> No transmit</label>
+      </div>
+
     </div>
 
   </div>
