@@ -72,7 +72,7 @@ function updateUI() {
     } else {
        timerOnDesc += 'Today';
     }
-    timerOnDesc += ' at ' + timerOnDate.getHours() + ':' + timerOnDate.getMinutes();
+    timerOnDesc += ' at ' + ('0' + timerOnDate.getHours()).substr(-2) + ':' + ('0' + timerOnDate.getMinutes()).substr(-2);
     timerOnDesc += ')';
 
     $('#timer .timer-on-desc').text(timerOnDesc);

@@ -8,6 +8,7 @@ define('LIRC_SEND_CMD',		'sudo irsend SEND_ONCE ATP_AC');
 global $lirc_conf_file_path;
 
 $DEV_MODE = false;
+$transmit = (@$_GET['transmit'] == '1');
 
 if (!isset($_POST['state'])) {
 
@@ -166,7 +167,7 @@ if (!isset($_POST['state'])) {
 		);
 
 		if (addCMDtoCONF($cmd, $cmdName)) {
-			if ($DEV_MODE) {
+			if ($DEV_MODE || !$transmit) {
 				$out = array();
 			} else {
 				$out = transmit($cmd, $cmdName);
